@@ -1,0 +1,4 @@
+.omc/
+*.pdf
+*.md
+!README.md
