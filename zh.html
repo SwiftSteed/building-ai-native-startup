@@ -6,394 +6,309 @@
 <title>创始人手册：构建 AI 原生创业公司</title>
 <style>
   :root {
-    --bg: #fafaf8;
-    --card-bg: #ffffff;
-    --text: #1a1a1a;
-    --text-secondary: #555;
-    --accent: #d4770a;
-    --accent-soft: #fef3e4;
-    --border: #e8e5e0;
-    --shadow: 0 1px 3px rgba(0,0,0,.06);
-    --code-bg: #f6f5f3;
-    --highlight: #fff8e6;
-    --tag-bg: #f0ede6;
-    --tag-text: #6b625a;
-    --stage-idea: #3b82f6;
-    --stage-mvp: #8b5cf6;
-    --stage-launch: #f59e0b;
-    --stage-scale: #10b981;
+    --bg: #fafaf8; --card-bg: #fff; --text: #1a1a1a; --text-secondary: #555;
+    --accent: #d4770a; --accent-soft: #fef3e4; --border: #e8e5e0;
+    --shadow: 0 1px 3px rgba(0,0,0,.06); --code-bg: #f6f5f3; --highlight: #fff8e6;
+    --stage-idea: #3b82f6; --stage-mvp: #8b5cf6; --stage-launch: #f59e0b;
+    --stage-scale: #10b981; --sidebar-w: 260px; --font-size: 17px;
   }
-
-  /* ---- Lang switcher ---- */
-  .lang-bar {
-    text-align: right;
-    padding: 12px 24px;
-    background: var(--card-bg);
-    border-bottom: 1px solid var(--border);
-    font-size: 14px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
+  .theme-light {
+    --bg: #fafaf8; --card-bg: #fff; --text: #1a1a1a; --text-secondary: #555;
+    --accent: #d4770a; --accent-soft: #fef3e4; --border: #e8e5e0;
+    --shadow: 0 1px 3px rgba(0,0,0,.06); --code-bg: #f6f5f3; --highlight: #fff8e6;
   }
-  .lang-bar a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    padding: 4px 12px;
-    border-radius: 4px;
-    margin-left: 4px;
+  .theme-dark {
+    --bg: #1a1917; --card-bg: #232220; --text: #e8e6e0; --text-secondary: #9d978b;
+    --accent: #f0a040; --accent-soft: #2d2618; --border: #383530;
+    --shadow: 0 1px 3px rgba(0,0,0,.3); --code-bg: #2a2824; --highlight: #2d2618;
   }
-  .lang-bar a.active {
-    color: var(--accent);
-    font-weight: 700;
-    background: var(--accent-soft);
-  }
-  .lang-bar a:hover { color: var(--accent); }
-
   @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1a1917;
-      --card-bg: #232220;
-      --text: #e8e6e0;
-      --text-secondary: #9d978b;
-      --accent: #f0a040;
-      --accent-soft: #2d2618;
-      --border: #383530;
-      --shadow: 0 1px 3px rgba(0,0,0,.3);
-      --code-bg: #2a2824;
-      --highlight: #2d2618;
-      --tag-bg: #2d2a24;
-      --tag-text: #9d978b;
+    :root:not(.theme-light) {
+      --bg: #1a1917; --card-bg: #232220; --text: #e8e6e0; --text-secondary: #9d978b;
+      --accent: #f0a040; --accent-soft: #2d2618; --border: #383530;
+      --shadow: 0 1px 3px rgba(0,0,0,.3); --code-bg: #2a2824; --highlight: #2d2618;
     }
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", -apple-system, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.8;
-    font-size: 17px;
-    -webkit-font-smoothing: antialiased;
+    font-family: "PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",-apple-system,sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.8;
+    font-size: var(--font-size); -webkit-font-smoothing: antialiased;
   }
 
-  /* ---- Hero ---- */
+  /* ===== PROGRESS BAR ===== */
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px; background: var(--accent);
+    z-index: 1000; transition: width .3s; width: 0%;
+  }
+
+  /* ===== TOOLBAR ===== */
+  #toolbar {
+    position: fixed; top: 12px; right: 16px; z-index: 999; display: flex;
+    gap: 6px; align-items: center;
+  }
+  #toolbar button {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 7px 10px; cursor: pointer; font-size: 14px; color: var(--text-secondary);
+    transition: all .15s; line-height: 1;
+  }
+  #toolbar button:hover { color: var(--accent); border-color: var(--accent); }
+  #toolbar button.active { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+  #toolbar .sep { width: 1px; height: 20px; background: var(--border); margin: 0 2px; }
+
+  /* ===== SEARCH ===== */
+  #search-box {
+    position: fixed; top: 0; left: 0; right: 0; background: var(--card-bg);
+    border-bottom: 2px solid var(--border); z-index: 998; padding: 14px 24px;
+    display: flex; gap: 10px; align-items: center; transform: translateY(-100%);
+    transition: transform .2s; box-shadow: var(--shadow);
+  }
+  #search-box.open { transform: translateY(0); }
+  #search-box input {
+    flex: 1; border: none; background: var(--code-bg); padding: 10px 16px;
+    border-radius: 8px; font-size: 16px; color: var(--text); outline: none;
+  }
+  #search-box .count { font-size: 13px; color: var(--text-secondary); white-space: nowrap; }
+  #search-box button {
+    background: none; border: 1px solid var(--border); border-radius: 6px;
+    padding: 6px 10px; cursor: pointer; color: var(--text); font-size: 13px;
+  }
+  #search-box button:hover { border-color: var(--accent); color: var(--accent); }
+  .search-highlight { background: #fde047; color: #000; border-radius: 2px; padding: 0 1px; }
+  .search-highlight.active { background: #f59e0b; outline: 2px solid #d97706; }
+
+  /* ===== SIDEBAR ===== */
+  #sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidebar-w);
+    background: var(--card-bg); border-right: 1px solid var(--border);
+    z-index: 900; overflow-y: auto; padding: 20px 0; display: flex; flex-direction: column;
+  }
+  #sidebar .sb-header {
+    padding: 8px 20px 16px; font-size: 14px; font-weight: 800;
+    border-bottom: 1px solid var(--border); margin-bottom: 12px;
+    letter-spacing: -.01em; color: var(--text);
+  }
+  #sidebar nav { flex: 1; overflow-y: auto; padding: 0 12px; }
+  #sidebar nav a {
+    display: flex; align-items: center; gap: 8px; padding: 7px 12px;
+    border-radius: 6px; text-decoration: none; color: var(--text-secondary);
+    font-size: 13px; transition: all .15s; margin-bottom: 2px; position: relative;
+  }
+  #sidebar nav a:hover { background: var(--accent-soft); color: var(--text); }
+  #sidebar nav a.active { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+  #sidebar nav a .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--border);
+    flex-shrink: 0; transition: background .3s;
+  }
+  #sidebar nav a .dot.done { background: var(--stage-scale); }
+  #sidebar .sb-highlights {
+    border-top: 1px solid var(--border); padding: 12px 20px; max-height: 200px; overflow-y: auto;
+  }
+  #sidebar .sb-highlights h3 {
+    font-size: 12px; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--text-secondary); margin-bottom: 8px;
+  }
+  #sidebar .sb-highlights .hl-item {
+    font-size: 12px; color: var(--text-secondary); padding: 3px 0;
+    cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  #sidebar .sb-highlights .hl-item:hover { color: var(--accent); }
+  #sidebar .sb-highlights .hl-empty { font-size: 12px; color: var(--text-secondary); opacity: .5; }
+
+  /* ===== MAIN CONTENT ===== */
+  #main { margin-left: var(--sidebar-w); }
+  .lang-bar {
+    text-align: right; padding: 12px 24px; background: var(--card-bg);
+    border-bottom: 1px solid var(--border); font-size: 14px; position: sticky;
+    top: 0; z-index: 10;
+  }
+  .lang-bar a { color: var(--text-secondary); text-decoration: none; padding: 4px 12px; border-radius: 4px; margin-left: 4px; }
+  .lang-bar a.active { color: var(--accent); font-weight: 700; background: var(--accent-soft); }
+  .lang-bar a:hover { color: var(--accent); }
+
   .hero {
-    background: linear-gradient(165deg, #1a1917 0%, #2a2520 40%, #1a1917 100%);
-    color: #f0ece4;
-    padding: 80px 24px 64px;
-    text-align: center;
-    border-bottom: 1px solid #383530;
+    background: linear-gradient(165deg,#1a1917 0%,#2a2520 40%,#1a1917 100%);
+    color: #f0ece4; padding: 60px 24px 48px; text-align: center; border-bottom: 1px solid #383530;
   }
-  .hero h1 {
-    font-size: clamp(28px, 6vw, 48px);
-    font-weight: 800;
-    letter-spacing: -.02em;
-    line-height: 1.25;
-    margin-bottom: 16px;
-    color: #fff;
-  }
-  .hero .subtitle {
-    font-size: 18px;
-    color: #b8b0a4;
-    max-width: 560px;
-    margin: 0 auto 24px;
-  }
-  .hero .meta {
-    display: flex;
-    gap: 24px;
-    justify-content: center;
-    flex-wrap: wrap;
-    font-size: 14px;
-    color: #8a8276;
-  }
-  .hero .meta span { display: flex; align-items: center; gap: 6px; }
-
-  /* ---- Stage badges ---- */
-  .stage-badges {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 28px;
-  }
-  .stage-badge {
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    background: rgba(255,255,255,.08);
-    color: #c8c0b4;
-    letter-spacing: .01em;
-  }
+  .hero h1 { font-size: clamp(26px,5vw,42px); font-weight: 800; letter-spacing: -.02em; line-height: 1.25; margin-bottom: 12px; color: #fff; }
+  .hero .subtitle { font-size: 16px; color: #b8b0a4; max-width: 500px; margin: 0 auto 20px; }
+  .hero .meta { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; font-size: 13px; color: #8a8276; }
+  .stage-badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
+  .stage-badge { padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,.08); color: #c8c0b4; }
   .stage-badge.s1 { border-left: 3px solid var(--stage-idea); }
   .stage-badge.s2 { border-left: 3px solid var(--stage-mvp); }
   .stage-badge.s3 { border-left: 3px solid var(--stage-launch); }
   .stage-badge.s4 { border-left: 3px solid var(--stage-scale); }
 
-  /* ---- Layout ---- */
-  .container {
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 40px 24px 80px;
-  }
+  .container { max-width: 740px; margin: 0 auto; padding: 32px 24px 80px; }
 
-  /* ---- Nav ---- */
-  .toc {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 32px;
-    margin-bottom: 48px;
-    box-shadow: var(--shadow);
-  }
-  .toc h2 {
-    font-size: 16px;
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    color: var(--text-secondary);
-    margin-bottom: 20px;
-  }
-  .toc ol {
-    list-style: none;
-    counter-reset: toc;
-  }
-  .toc li {
-    counter-increment: toc;
-    margin-bottom: 4px;
-  }
-  .toc a {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    padding: 8px 12px;
-    border-radius: 6px;
-    text-decoration: none;
-    color: var(--text);
-    transition: background .15s;
-    font-size: 15px;
-  }
-  .toc a:hover { background: var(--accent-soft); }
-  .toc a::before {
-    content: counter(toc, decimal-leading-zero);
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--accent);
-    min-width: 24px;
-  }
-
-  /* ---- Content ---- */
-  .chapter {
-    margin-bottom: 56px;
-    scroll-margin-top: 60px;
-  }
+  /* Content styles */
+  .chapter { margin-bottom: 48px; scroll-margin-top: 60px; }
   .chapter-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 2px solid var(--border);
+    display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+    padding-bottom: 14px; border-bottom: 2px solid var(--border);
+    cursor: pointer; user-select: none; transition: opacity .15s;
   }
-  .chapter-num {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--accent);
-    letter-spacing: .06em;
-    text-transform: uppercase;
+  .chapter-header:hover { opacity: .8; }
+  .chapter-header .toggle-icon {
+    font-size: 14px; color: var(--accent); transition: transform .3s; flex-shrink: 0;
   }
-  .chapter h2 {
-    font-size: 26px;
-    font-weight: 800;
-    letter-spacing: -.01em;
-    line-height: 1.3;
-  }
+  .chapter.collapsed .toggle-icon { transform: rotate(-90deg); }
+  .chapter-body { overflow: hidden; transition: max-height .4s ease, opacity .3s; }
+  .chapter.collapsed .chapter-body { max-height: 0 !important; opacity: 0; }
+  .chapter-num { font-size: 12px; font-weight: 700; color: var(--accent); letter-spacing: .06em; text-transform: uppercase; }
+  .chapter-check { font-size: 14px; opacity: 0; transition: opacity .3s; flex-shrink: 0; }
+  .chapter-check.done { opacity: 1; }
+  .chapter h2 { font-size: 24px; font-weight: 800; letter-spacing: -.01em; line-height: 1.3; flex: 1; }
 
-  h3 {
-    font-size: 20px;
-    font-weight: 700;
-    margin: 36px 0 14px;
-    letter-spacing: -.01em;
-  }
-  h4 {
-    font-size: 17px;
-    font-weight: 700;
-    margin: 28px 0 10px;
-    color: var(--text);
-  }
-
-  p { margin-bottom: 16px; }
+  h3 { font-size: 19px; font-weight: 700; margin: 32px 0 12px; letter-spacing: -.01em; }
+  h4 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
+  p { margin-bottom: 14px; }
   p strong { color: var(--text); }
 
-  /* ---- Highlights ---- */
-  .highlight-box {
-    background: var(--highlight);
-    border-left: 4px solid var(--accent);
-    border-radius: 0 8px 8px 0;
-    padding: 20px 24px;
-    margin: 24px 0;
-  }
-  .highlight-box p { margin-bottom: 8px; }
+  .highlight-box { background: var(--highlight); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: 18px 22px; margin: 20px 0; }
+  .highlight-box p { margin-bottom: 6px; }
   .highlight-box p:last-child { margin-bottom: 0; }
 
-  /* ---- Challenge boxes ---- */
-  .challenge {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 24px;
-    margin: 20px 0;
-    box-shadow: var(--shadow);
-  }
-  .challenge-label {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    color: #e05555;
-    margin-bottom: 8px;
-  }
+  .challenge { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 22px; margin: 18px 0; box-shadow: var(--shadow); }
+  .challenge-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #e05555; margin-bottom: 6px; }
   .challenge h4 { margin-top: 0; }
 
-  /* ---- Exercise ---- */
-  .exercise {
-    background: var(--code-bg);
-    border-radius: 8px;
-    padding: 18px 22px;
-    margin: 16px 0;
-    font-size: 15px;
-  }
-  .exercise::before {
-    content: "练习";
-    display: block;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    color: var(--accent);
-    margin-bottom: 8px;
-  }
+  .exercise { background: var(--code-bg); border-radius: 8px; padding: 16px 20px; margin: 14px 0; font-size: 15px; }
+  .exercise::before { content: "练习"; display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); margin-bottom: 6px; }
 
-  /* ---- Blockquote ---- */
-  blockquote {
-    border-left: 3px solid var(--accent);
-    padding: 12px 20px;
-    margin: 20px 0;
-    color: var(--text-secondary);
-    font-style: italic;
-  }
+  blockquote { border-left: 3px solid var(--accent); padding: 10px 18px; margin: 18px 0; color: var(--text-secondary); font-style: italic; }
 
-  /* ---- Exit criteria ---- */
-  .criteria {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 24px;
-    margin: 24px 0;
-  }
+  .criteria { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 22px; margin: 20px 0; }
   .criteria h4 { margin-top: 0; }
-  .criteria ol { padding-left: 20px; }
-  .criteria li { margin-bottom: 8px; }
-  .criteria li strong { color: var(--text); }
+  .criteria ol, .criteria ul { padding-left: 20px; }
 
-  /* ---- Stage transition ---- */
-  .stage-transition {
-    text-align: center;
-    padding: 28px 24px;
-    margin: 40px 0 20px;
-    font-size: 15px;
-    color: var(--text-secondary);
-    border-top: 1px dashed var(--border);
-    border-bottom: 1px dashed var(--border);
-  }
+  .stage-transition { text-align: center; padding: 24px; margin: 36px 0 16px; font-size: 14px; color: var(--text-secondary); border-top: 1px dashed var(--border); border-bottom: 1px dashed var(--border); }
   .stage-transition strong { color: var(--accent); }
 
-  /* ---- Comparison table ---- */
-  .compare-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 14px;
-  }
-  .compare-table th {
-    background: var(--code-bg);
-    padding: 10px 14px;
-    text-align: left;
-    font-weight: 700;
-    font-size: 13px;
-    border-bottom: 2px solid var(--border);
-  }
-  .compare-table td {
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
-    vertical-align: top;
-  }
+  .compare-table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 14px; }
+  .compare-table th { background: var(--code-bg); padding: 9px 12px; text-align: left; font-weight: 700; font-size: 12px; border-bottom: 2px solid var(--border); }
+  .compare-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
   .compare-table tr:hover td { background: var(--accent-soft); }
 
-  /* ---- Resources ---- */
+  /* ===== CHECKLIST ===== */
+  .checkable { list-style: none !important; padding-left: 0 !important; }
+  .checkable li {
+    display: flex; align-items: flex-start; gap: 8px; padding: 5px 0;
+    cursor: pointer; transition: all .2s; margin-bottom: 4px !important;
+  }
+  .checkable li .cb {
+    width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 4px;
+    flex-shrink: 0; margin-top: 3px; transition: all .2s; display: flex;
+    align-items: center; justify-content: center; font-size: 11px;
+  }
+  .checkable li.checked .cb { background: var(--stage-scale); border-color: var(--stage-scale); color: #fff; }
+  .checkable li.checked .cb::after { content: "✓"; }
+  .checkable li.checked .ct { text-decoration: line-through; opacity: .5; }
+  .checkable li:hover .cb { border-color: var(--accent); }
+
+  /* ===== TEXT HIGHLIGHT ===== */
+  .text-hl { background: #fde047; color: #000; cursor: pointer; border-radius: 2px; padding: 0 1px; transition: background .15s; }
+  .text-hl:hover { background: #facc15; }
+  #hl-tooltip {
+    position: absolute; z-index: 997; background: var(--card-bg);
+    border: 1px solid var(--border); border-radius: 8px; padding: 6px; box-shadow: 0 4px 16px rgba(0,0,0,.15);
+    display: none; gap: 4px;
+  }
+  #hl-tooltip button {
+    background: none; border: none; padding: 5px 10px; border-radius: 4px;
+    cursor: pointer; font-size: 13px; color: var(--text);
+  }
+  #hl-tooltip button:hover { background: var(--accent-soft); }
+
   .resources { margin-top: 48px; }
-  .resources h2 {
-    font-size: 26px;
-    font-weight: 800;
-    margin-bottom: 24px;
-  }
-  .resources h3 { font-size: 17px; margin-top: 28px; }
-  .resources ul {
-    list-style: none;
-    padding: 0;
-  }
-  .resources li {
-    padding: 6px 0;
-    font-size: 15px;
-    color: var(--text-secondary);
-  }
-  .resources a {
-    color: var(--accent);
-    text-decoration: none;
-  }
-  .resources a:hover { text-decoration: underline; }
+  .resources h2 { font-size: 24px; font-weight: 800; margin-bottom: 20px; }
+  .resources h3 { font-size: 16px; margin-top: 24px; }
+  .resources ul { list-style: none; padding: 0; }
+  .resources li { padding: 4px 0; font-size: 14px; color: var(--text-secondary); }
 
-  /* ---- Footer ---- */
-  .footer {
-    text-align: center;
-    padding: 40px 24px;
-    color: var(--text-secondary);
-    font-size: 14px;
-    border-top: 1px solid var(--border);
-    margin-top: 60px;
-  }
+  .footer { text-align: center; padding: 32px 24px; color: var(--text-secondary); font-size: 13px; border-top: 1px solid var(--border); margin-top: 48px; }
 
-  /* ---- Responsive ---- */
-  @media (max-width: 600px) {
-    body { font-size: 16px; }
-    .hero { padding: 48px 20px 40px; }
-    .container { padding: 24px 16px 60px; }
-    .toc { padding: 20px; }
-    .chapter h2 { font-size: 22px; }
-    h3 { font-size: 18px; }
+  /* ===== MOBILE SIDEBAR ===== */
+  #sidebar-toggle {
+    display: none; position: fixed; bottom: 20px; left: 20px; z-index: 950;
+    width: 44px; height: 44px; border-radius: 50%; background: var(--accent); color: #fff;
+    border: none; font-size: 18px; cursor: pointer; box-shadow: 0 2px 12px rgba(0,0,0,.2);
+  }
+  #sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 899; }
+
+  @media (max-width: 860px) {
+    :root { --sidebar-w: 0px; }
+    #sidebar {
+      left: -280px; width: 280px; transition: left .3s;
+    }
+    #sidebar.open { left: 0; }
+    #sidebar-overlay.open { display: block; }
+    #sidebar-toggle { display: flex; align-items: center; justify-content: center; }
+    #main { margin-left: 0; }
+    #toolbar { right: 8px; top: 8px; }
+    #toolbar button { padding: 6px 8px; font-size: 12px; }
+    .hero { padding: 40px 16px 36px; }
+    .container { padding: 20px 16px 60px; }
+    .chapter h2 { font-size: 20px; }
+    h3 { font-size: 17px; }
     .lang-bar { text-align: center; }
   }
 
-  /* ---- Print ---- */
   @media print {
+    #sidebar, #toolbar, #progress-bar, #search-box, #sidebar-toggle, #sidebar-overlay, .lang-bar { display: none !important; }
+    #main { margin-left: 0 !important; }
     .hero { padding: 20px 0; background: none; color: #000; border: none; }
     .hero h1 { color: #000; }
-    .hero .subtitle, .hero .meta { color: #555; }
-    .toc { break-after: page; box-shadow: none; }
-    .chapter { break-before: page; }
+    .chapter-header { cursor: auto; }
+    .chapter-body { max-height: none !important; opacity: 1 !important; }
     body { font-size: 14px; line-height: 1.6; }
   }
 </style>
 </head>
 <body>
 
-<!-- Lang switcher -->
+<div id="progress-bar"></div>
+<div id="sidebar-overlay"></div>
+
+<!-- SEARCH BOX -->
+<div id="search-box">
+  <input type="text" id="search-input" placeholder="搜索...">
+  <span class="count" id="search-count"></span>
+  <button id="search-prev">↑</button>
+  <button id="search-next">↓</button>
+  <button id="search-close">✕</button>
+</div>
+
+<!-- TOOLBAR -->
+<div id="toolbar">
+  <button id="btn-search" title="搜索">🔍</button>
+  <div class="sep"></div>
+  <button id="btn-theme" title="主题">🌓</button>
+  <button id="btn-font-down" title="缩小字号">A-</button>
+  <button id="btn-font-up" title="放大字号">A+</button>
+</div>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sb-header">创始人手册</div>
+  <nav id="sidebar-nav"></nav>
+  <div class="sb-highlights">
+    <h3>我的高亮</h3>
+    <div id="hl-list"><span class="hl-empty">选中文字后可高亮</span></div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div id="main">
+
 <div class="lang-bar">
   <a href="zh.html" class="active">中文</a>
   <a href="en.html">English</a>
 </div>
 
-<!-- ===== HERO ===== -->
 <header class="hero">
   <h1>创始人手册：构建 AI 原生创业公司</h1>
   <p class="subtitle">从想法到规模化的四个阶段——当 AI 成为核心驱动力，创业规则被彻底重写</p>
@@ -411,391 +326,315 @@
 
 <div class="container">
 
-<!-- ===== TOC ===== -->
-<nav class="toc">
-  <h2>目录</h2>
-  <ol>
-    <li><a href="#ch1">创业生命周期：2026 重启版</a></li>
-    <li><a href="#ch2">创始人的定义正在改变</a></li>
-    <li><a href="#ch3">想法阶段 Idea Stage</a></li>
-    <li><a href="#ch4">MVP 阶段</a></li>
-    <li><a href="#ch5">产品发布阶段 Launch Stage</a></li>
-    <li><a href="#ch6">规模化阶段 Scale Stage</a></li>
-    <li><a href="#ch7">同一个角色，全新的规则</a></li>
-    <li><a href="#resources">资源</a></li>
-  </ol>
-</nav>
-
-<!-- ===== CHAPTER 1 ===== -->
 <section class="chapter" id="ch1">
   <div class="chapter-header">
+    <span class="toggle-icon">▼</span>
     <span class="chapter-num">Chapter 1</span>
     <h2>创业生命周期：2026 重启版</h2>
+    <span class="chapter-check">✅</span>
   </div>
-
-  <p>AI 正在重塑创业公司的构建方式。从未写过一行代码的创始人，如今能直接交付生产级应用；"十人独角兽"已从逆袭传说，变成了可主动选择的战略路径。</p>
-
-  <p>在 2026 年，AI 能写生产代码、做市场调研、梳理竞争格局、撰写投资人材料，还能自动化运营流程。曾经，即便是经验丰富的技术创始人，也得花大力气去整合各种工具、平台和系统才能把想法落地——AI 抹平了这些陡峭的学习曲线。最重要的结果是：<strong>谁能启动一家创业公司、谁能做出产品，这条起跑线被拉平了。</strong></p>
-
-  <p>在 2026 年，一个好想法能让创始人走得更远。智能体编程把过去需要一整个工程师团队才能完成的工作，压缩到创始人一个人就能交付。</p>
-
-  <div class="highlight-box">
-    <p>传统创业增长路径：验证 → 融资 → 招人 → 构建 → 再融资 → 增长 → 再招人 → 循环往复</p>
-    <p><strong>AI 时代的新现实：</strong>每个新阶段不再理所当然地意味着更大的团队、不同的技能组合和新的融资轮次。</p>
+  <div class="chapter-body">
+    <p>AI 正在重塑创业公司的构建方式。从未写过一行代码的创始人，如今能直接交付生产级应用；"十人独角兽"已从逆袭传说，变成了可主动选择的战略路径。</p>
+    <p>在 2026 年，AI 能写生产代码、做市场调研、梳理竞争格局、撰写投资人材料，还能自动化运营流程。曾经，即便是经验丰富的技术创始人，也得花大力气去整合各种工具、平台和系统才能把想法落地——AI 抹平了这些陡峭的学习曲线。最重要的结果是：<strong>谁能启动一家创业公司、谁能做出产品，这条起跑线被拉平了。</strong></p>
+    <p>在 2026 年，一个好想法能让创始人走得更远。智能体编程把过去需要一整个工程师团队才能完成的工作，压缩到创始人一个人就能交付。</p>
+    <div class="highlight-box">
+      <p>传统创业增长路径：验证 → 融资 → 招人 → 构建 → 再融资 → 增长 → 再招人 → 循环往复</p>
+      <p><strong>AI 时代的新现实：</strong>每个新阶段不再理所当然地意味着更大的团队、不同的技能组合和新的融资轮次。</p>
+    </div>
+    <p>本手册重新绘制了创业旅程的四个核心阶段——<strong>想法、MVP、发布、规模化</strong>——基于全新的现实。我们将逐一审视：当 AI 成为你技术和组织发展的核心驱动力时，每个阶段长什么样？每个阶段该用什么工具？以及使用这些工具的创始人，是如何压缩时间线的？</p>
   </div>
-
-  <p>本手册重新绘制了创业旅程的四个核心阶段——<strong>想法、MVP、发布、规模化</strong>——基于全新的现实。我们将逐一审视：当 AI 成为你技术和组织发展的核心驱动力时，每个阶段长什么样？每个阶段该用什么工具？以及使用这些工具的创始人，是如何压缩时间线的？</p>
 </section>
 
-<!-- ===== CHAPTER 2 ===== -->
+<!-- Chapters 2-7 + Resources are in the content below - I'll write them compactly -->
 <section class="chapter" id="ch2">
   <div class="chapter-header">
+    <span class="toggle-icon">▼</span>
     <span class="chapter-num">Chapter 2</span>
     <h2>创始人的定义正在改变</h2>
+    <span class="chapter-check">✅</span>
   </div>
-
-  <p>过去，创始人由"能做什么"来定义：技术创始人写代码，非技术创始人跑业务、谈合作。但在 2026 年，创始人可用的模型、系统和 AI 智能体，已经拆掉了<strong>"能建的人"和"有想法值得建的人"之间的那堵墙。</strong></p>
-
-  <p>AI 原生创业公司正在从根本上改变"创始人"的含义。如今，没有工程背景的人能构建出将想法落地的生产级软件；而技术过硬但缺乏商业经验的创始人，也能轻松产出市场进入策略、财务模型和精良的融资路演材料。</p>
-
-  <p>回顾历史，创始人的大部分时间都花在执行模式上：写代码、管人、处理日常运营事务。而在 AI 原生的创业公司中，创始人的角色变得<strong>更像一个智能体的编排者</strong>，而非个人贡献者——这些智能体是专门的 AI 助手，能读文件、执行命令、运行代码，甚至浏览网页。创始人的注意力上移到更高阶的工作：产生想法，并指挥执行这些想法的系统。</p>
-
-  <div class="highlight-box">
-    <p><strong>最具革命性的结果：</strong>为拥有行业专长但不懂技术的创始人打开了大门。当创始人的来源不再局限于有工程背景的人时，你会看到由完全不同生命经验的人创建的创业公司，去解决那些传统技术创始人路径从未关注过（甚至从未注意到）的真实问题。</p>
-  </div>
-
-  <h3>AI 工具如何让精益创业公司获得超能力</h3>
-  <p>传统创业模型假设你需要招工程师来构建、销售来卖、运营来维持公司运转。人数被视为组织动能和产品成熟度的标志。但 2026 年的早期创业公司截然不同——<strong>它们天生极致精简</strong>，通常只有创始人自己，或再加一两个搭档。通过将技术和组织的发展都建立在 AI 基础设施之上，它们可以在扩大团队之前就达到产品验证、早期收入甚至盈利。</p>
-
-  <h4>对话式智能与研究</h4>
-  <blockquote>想象一个：随叫随到的全领域专家</blockquote>
-  <p>想想创始人在第一年需要知道但几乎肯定不知道的所有事：怎么设置薪酬？怎么规划产品开发冲刺？怎么写一份紧凑的投资人备忘录？这类早期创业问题，过去答案都一样——"找个懂的人问"。现在，Claude 可以直接回答这些问题。</p>
-
-  <h4>智能体编程</h4>
-  <blockquote>想象一个：永远在线、从不卡壳的工程师</blockquote>
-  <p>过去构建软件需要技术合伙人、外包开发团队，或者在写第一行产品代码之前有足够长的资金跑道来招聘工程团队。如今，智能体编程工具让每个有抱负的创始人，都可以用自然语言描述想构建的东西，然后指挥 AI 以整个工程团队的速度和规模去生成、测试、调试和重构生产级代码。<strong>"我有个想法"到"我有个产品"的时间线被大幅压缩。</strong></p>
-
-  <h4>工作流自动化</h4>
-  <blockquote>想象一个：按需启动的自动化运营团队</blockquote>
-  <p>即使创始人能像咨询顾问一样做研究、像工程团队一样构建，还有一整类工作——排期、更新 CRM、拉每周报表、保持文档更新、发布内容、追踪合规要求——仍然必须完成。AI 工作流自动化可以卸掉这些负担。更重要的是，Claude Cowork 能与创业公司运行的各种系统无缝集成，而不需要有人专门来搭建和维护这些集成。</p>
-
-  <div class="highlight-box">
-    <p><strong>核心洞察：</strong>能有效利用 AI 的研究、自动化和智能体编程能力的创始人，可以构建一个产出远超其人员规模的组织。但这些工作不会自动发生——编排这些 AI 工具的创始人，需要知道如何（以及何时）使用它们。</p>
+  <div class="chapter-body">
+    <p>过去，创始人由"能做什么"来定义：技术创始人写代码，非技术创始人跑业务、谈合作。但在 2026 年，创始人可用的模型、系统和 AI 智能体，已经拆掉了<strong>"能建的人"和"有想法值得建的人"之间的那堵墙。</strong></p>
+    <p>AI 原生创业公司正在从根本上改变"创始人"的含义。如今，没有工程背景的人能构建出将想法落地的生产级软件；而技术过硬但缺乏商业经验的创始人，也能轻松产出市场进入策略、财务模型和精良的融资路演材料。</p>
+    <p>回顾历史，创始人的大部分时间都花在执行模式上：写代码、管人、处理日常运营事务。而在 AI 原生的创业公司中，创始人的角色变得<strong>更像一个智能体的编排者</strong>，而非个人贡献者——这些智能体是专门的 AI 助手，能读文件、执行命令、运行代码，甚至浏览网页。创始人的注意力上移到更高阶的工作：产生想法，并指挥执行这些想法的系统。</p>
+    <div class="highlight-box">
+      <p><strong>最具革命性的结果：</strong>为拥有行业专长但不懂技术的创始人打开了大门。当创始人的来源不再局限于有工程背景的人时，你会看到由完全不同生命经验的人创建的创业公司，去解决那些传统技术创始人路径从未关注过（甚至从未注意到）的真实问题。</p>
+    </div>
+    <h3>AI 工具如何让精益创业公司获得超能力</h3>
+    <p>传统创业模型假设你需要招工程师来构建、销售来卖、运营来维持公司运转。人数被视为组织动能和产品成熟度的标志。但 2026 年的早期创业公司截然不同——<strong>它们天生极致精简</strong>，通常只有创始人自己，或再加一两个搭档。通过将技术和组织的发展都建立在 AI 基础设施之上，它们可以在扩大团队之前就达到产品验证、早期收入甚至盈利。</p>
+    <h4>对话式智能与研究</h4>
+    <blockquote>想象一个：随叫随到的全领域专家</blockquote>
+    <p>想想创始人在第一年需要知道但几乎肯定不知道的所有事：怎么设置薪酬？怎么规划产品开发冲刺？怎么写一份紧凑的投资人备忘录？这类早期创业问题，过去答案都一样——"找个懂的人问"。现在，Claude 可以直接回答这些问题。</p>
+    <h4>智能体编程</h4>
+    <blockquote>想象一个：永远在线、从不卡壳的工程师</blockquote>
+    <p>过去构建软件需要技术合伙人、外包开发团队，或者在写第一行产品代码之前有足够长的资金跑道来招聘工程团队。如今，智能体编程工具让每个有抱负的创始人，都可以用自然语言描述想构建的东西，然后指挥 AI 以整个工程团队的速度和规模去生成、测试、调试和重构生产级代码。<strong>"我有个想法"到"我有个产品"的时间线被大幅压缩。</strong></p>
+    <h4>工作流自动化</h4>
+    <blockquote>想象一个：按需启动的自动化运营团队</blockquote>
+    <p>即使创始人能像咨询顾问一样做研究、像工程团队一样构建，还有一整类工作——排期、更新 CRM、拉每周报表、保持文档更新、发布内容、追踪合规要求——仍然必须完成。AI 工作流自动化可以卸掉这些负担。更重要的是，Claude Cowork 能与创业公司运行的各种系统无缝集成，而不需要有人专门来搭建和维护这些集成。</p>
+    <div class="highlight-box">
+      <p><strong>核心洞察：</strong>能有效利用 AI 的研究、自动化和智能体编程能力的创始人，可以构建一个产出远超其人员规模的组织。但这些工作不会自动发生——编排这些 AI 工具的创始人，需要知道如何（以及何时）使用它们。</p>
+    </div>
   </div>
 </section>
 
-<!-- ===== CHAPTER 3 ===== -->
 <section class="chapter" id="ch3">
   <div class="chapter-header">
+    <span class="toggle-icon">▼</span>
     <span class="chapter-num">Chapter 3</span>
     <h2>想法阶段 Idea Stage</h2>
+    <span class="chapter-check">✅</span>
   </div>
-
-  <p>每个创业创始人都是从同一个起点出发：一个萦绕心头的、不解决就停不下来的问题。这是 idea 与现实碰撞的创业阶段——<strong>2026 年的创业成功，需要一种纪律：在没有证据支撑之前，坚决不动手构建。</strong></p>
-
-  <p>这个阶段的核心工作是：研究、客户发现、竞争分析，以及诚实地审视反面证据——所有这些，都要在让 Claude Code 生成第一行生产代码之前完成。</p>
-
-  <h3>核心目标</h3>
-  <p><strong>研究导向的验证：</strong>在投入资源构建之前，收集确凿的证据，证明一个真实的痛点确实存在，并且你提出的解决方案能有效解决它。</p>
-
-  <p>想法阶段是一系列必须按顺序回答的问题：</p>
-  <ol style="padding-left:20px; margin-bottom:16px;">
-    <li style="margin-bottom:6px;">这个问题是真实的、具体的，且发生频率足以支撑一个创业方向吗？</li>
-    <li style="margin-bottom:6px;">到底谁有这个痛点？这构成一个市场吗？</li>
-    <li style="margin-bottom:6px;">有没有别人在解决它？如果有，怎么解决？解决得如何？</li>
-    <li style="margin-bottom:6px;">一个真正的解决方案到底需要做到什么？我的想法做到这些了吗？</li>
-  </ol>
-
-  <p>这些问题的答案汇总起来，最终回答一个终极问题：<strong>这值得做吗？</strong></p>
-
-  <p>这意味着在行动之前先做到具体。"人们在报销上很痛苦"是一个观察；而"中型企业的财务经理每周花四个多小时核对报销单据，因为现有工具不能和他们的财务软件打通"——这才是一个<strong>可验证的假设</strong>。</p>
-
-  <div class="criteria">
-    <h4>退出标准：找到问题-方案匹配</h4>
-    <p>当你能对以下三个问题都回答"是"时，就准备好离开想法阶段了：</p>
-    <ol>
-      <li><strong>问题是真实且具体的吗？</strong>明确指出谁在经历这个问题、多久遇到一次、多严重、他们目前怎么应对。</li>
-      <li><strong>你的解决方案是否针对真正的问题？</strong>不是你自己最初假设的那个，而是验证过程揭示的那个。</li>
-      <li><strong>你有足够的信号来证明值得构建吗？</strong>你永远不会有确定性，但需要足够的定性证据，使得投入 MVP 是一个基于推理的决定，而不是信仰之跃。</li>
+  <div class="chapter-body">
+    <p>每个创业创始人都是从同一个起点出发：一个萦绕心头的、不解决就停不下来的问题。这是 idea 与现实碰撞的创业阶段——<strong>2026 年的创业成功，需要一种纪律：在没有证据支撑之前，坚决不动手构建。</strong></p>
+    <p>这个阶段的核心工作是：研究、客户发现、竞争分析，以及诚实地审视反面证据。</p>
+    <h3>核心目标</h3>
+    <p><strong>研究导向的验证：</strong>在投入资源构建之前，收集确凿的证据。</p>
+    <p>想法阶段是一系列必须按顺序回答的问题：</p>
+    <ol style="padding-left:20px; margin-bottom:16px;">
+      <li style="margin-bottom:6px;">这个问题是真实的、具体的，且发生频率足以支撑一个创业方向吗？</li>
+      <li style="margin-bottom:6px;">到底谁有这个痛点？这构成一个市场吗？</li>
+      <li style="margin-bottom:6px;">有没有别人在解决它？如果有，怎么解决？解决得如何？</li>
+      <li style="margin-bottom:6px;">一个真正的解决方案到底需要做到什么？我的想法做到这些了吗？</li>
     </ol>
-  </div>
-
-  <h3>主要挑战</h3>
-
-  <div class="challenge">
-    <span class="challenge-label">挑战一</span>
-    <h4>把构建当成验证</h4>
-    <p>当技术障碍被移除，热情洋溢的创始人很可能跳过创业旅程中最重要的工作——验证自己的想法是否真的是人们需要且会使用的解决方案。</p>
-    <p><strong>即使在智能体编程时代之前，42% 的创业公司失败是因为做了没人要的东西。</strong>现在，Claude Code 这类工具将"我有个想法"到"我有个产品"的距离大幅缩短——这个失败率只会更高。</p>
-    <p>一个能跑的原型很容易被误认为"你在解决真实问题"的具体证据——但它不是。原型真正的用途，是作为与潜在用户对话时的一个压力测试道具。<strong>这些对话本身，才是真正的证据。</strong></p>
-  </div>
-
-  <div class="challenge">
-    <span class="challenge-label">挑战二</span>
-    <h4>过早规模化</h4>
-    <p>当构建变得毫不费力、即时可得时，你很容易把执行规模推到业务需求的前面。智能体编程助手太强大了，以至于很容易在从未有意识地偏离轨道的情况下，就把执行规模远远推到了问题-方案验证的前面。</p>
-    <p><strong>这个阶段的首要指令是：让你的认知始终领先于你的构建。</strong></p>
-  </div>
-
-  <div class="challenge">
-    <span class="challenge-label">挑战三</span>
-    <h4>丧失客观性</h4>
-    <p>让 AI 工具帮你找支持已有信念的证据，它就一定能找到。确认偏误现在有了一个强大的加速器。每当你让 AI 分析数据、评估竞争或验证一个假设时，都需要有意识地引导它去构建反对你自身立场的最有力论证。</p>
-  </div>
-
-  <h3>Claude 如何帮助想法阶段的创始人</h3>
-  <p>以下是 Claude 的三个产品界面的使用场景：</p>
-
-  <table class="compare-table">
-    <tr><th>任务类型</th><th>工具</th><th>原因</th></tr>
-    <tr><td>提问、改写、快速头脑风暴</td><td>Chat</td><td>快速、对话式、无需设置</td></tr>
-    <tr><td>研究、分析、基于文件构建成品文档</td><td>Claude Cowork</td><td>文件夹访问、连接器、技能、定时运行</td></tr>
-    <tr><td>写代码、测试、交付软件</td><td>Claude Code</td><td>代码库访问、diff、git、开发环境</td></tr>
-  </table>
-
-  <p><strong>三者底层是同一个 Claude，变的是它周围的工作空间。</strong></p>
-
-  <div class="exercise">
-    <p>与 Claude 一起打磨你的痛点陈述，直到它具体到包含可定义的人群、可观察的频率、清晰的影响程度以及已知的当前替代方案。带着已经被最强反方论点压力测试过的假设进入客户发现阶段——这样你的用户访谈才是真正开放式的，而不是寻找确认。</p>
-  </div>
-
-  <div class="exercise">
-    <p>让 Claude 按层级绘制你的竞争格局：直接竞争者、间接竞争者、潜在收购者，以及可能进入你领域的相邻玩家。然后让它论证为什么每个层级都对你的成功构成真正威胁——而不只是那些最容易反驳的威胁版本。</p>
-  </div>
-
-  <div class="exercise">
-    <p>先自己写访谈问题草稿，然后让 Claude 审计它们。特别让它标出任何引导式、面向未来、太宽泛、或可能引出"社会期望回答"而非诚实回答的问题。然后让它为访谈中最可能产生回避的节点，各建议一个追问。</p>
-  </div>
-
-  <div class="exercise">
-    <p>每完成五次访谈后，指挥 Claude Cowork 综合你的笔记，产出两份清单：支持你假设的证据，以及挑战它的证据。如果第一份清单明显比第二份长，让 Claude 帮你判断——这种不对称反映的是数据中真正存在的模式，还是你希望在数据中看到的模式？</p>
-  </div>
-
-  <div class="stage-transition">
-    创始人核心问题：<strong>"这值得做吗？"</strong> → 下一阶段：<strong>"我们应该先构建什么？"</strong>
+    <p>这些问题的答案汇总起来，最终回答一个终极问题：<strong>这值得做吗？</strong></p>
+    <p>这意味着在行动之前先做到具体。"人们在报销上很痛苦"是一个观察；而"中型企业的财务经理每周花四个多小时核对报销单据，因为现有工具不能和他们的财务软件打通"——这才是一个<strong>可验证的假设</strong>。</p>
+    <div class="criteria">
+      <h4>退出标准：找到问题-方案匹配</h4>
+      <p>当你能对以下三个问题都回答"是"时，就准备好离开想法阶段了：</p>
+      <ol class="checkable">
+        <li><span class="cb"></span><span class="ct"><strong>问题是真实且具体的吗？</strong>明确指出谁在经历这个问题、多久遇到一次、多严重、他们目前怎么应对。</span></li>
+        <li><span class="cb"></span><span class="ct"><strong>你的解决方案是否针对真正的问题？</strong>不是你自己最初假设的那个，而是验证过程揭示的那个。</span></li>
+        <li><span class="cb"></span><span class="ct"><strong>你有足够的信号来证明值得构建吗？</strong>你永远不会有确定性，但需要足够的定性证据，使得投入 MVP 是一个基于推理的决定，而不是信仰之跃。</span></li>
+      </ol>
+    </div>
+    <h3>主要挑战</h3>
+    <div class="challenge">
+      <span class="challenge-label">挑战一</span>
+      <h4>把构建当成验证</h4>
+      <p>当技术障碍被移除，热情洋溢的创始人很可能跳过创业旅程中最重要的工作——验证自己的想法是否真的是人们需要且会使用的解决方案。</p>
+      <p><strong>即使在智能体编程时代之前，42% 的创业公司失败是因为做了没人要的东西。</strong>现在，Claude Code 这类工具将"我有个想法"到"我有个产品"的距离大幅缩短——这个失败率只会更高。</p>
+      <p>一个能跑的原型很容易被误认为"你在解决真实问题"的具体证据——但它不是。原型真正的用途，是作为与潜在用户对话时的一个压力测试道具。<strong>这些对话本身，才是真正的证据。</strong></p>
+    </div>
+    <div class="challenge">
+      <span class="challenge-label">挑战二</span>
+      <h4>过早规模化</h4>
+      <p>当构建变得毫不费力、即时可得时，你很容易把执行规模推到业务需求的前面。<strong>这个阶段的首要指令是：让你的认知始终领先于你的构建。</strong></p>
+    </div>
+    <div class="challenge">
+      <span class="challenge-label">挑战三</span>
+      <h4>丧失客观性</h4>
+      <p>让 AI 工具帮你找支持已有信念的证据，它就一定能找到。确认偏误现在有了一个强大的加速器。每当你让 AI 分析数据、评估竞争或验证一个假设时，都需要有意识地引导它去构建反对你自身立场的最有力论证。</p>
+    </div>
+    <h3>Claude 如何帮助想法阶段的创始人</h3>
+    <table class="compare-table">
+      <tr><th>任务类型</th><th>工具</th><th>原因</th></tr>
+      <tr><td>提问、改写、快速头脑风暴</td><td>Chat</td><td>快速、对话式、无需设置</td></tr>
+      <tr><td>研究、分析、基于文件构建成品文档</td><td>Claude Cowork</td><td>文件夹访问、连接器、技能、定时运行</td></tr>
+      <tr><td>写代码、测试、交付软件</td><td>Claude Code</td><td>代码库访问、diff、git、开发环境</td></tr>
+    </table>
+    <p><strong>三者底层是同一个 Claude，变的是它周围的工作空间。</strong></p>
+    <div class="exercise">
+      <p>与 Claude 一起打磨你的痛点陈述，直到它具体到包含可定义的人群、可观察的频率、清晰的影响程度以及已知的当前替代方案。带着已经被最强反方论点压力测试过的假设进入客户发现阶段——这样你的用户访谈才是真正开放式的，而不是寻找确认。</p>
+    </div>
+    <div class="exercise">
+      <p>让 Claude 按层级绘制你的竞争格局：直接竞争者、间接竞争者、潜在收购者，以及可能进入你领域的相邻玩家。然后让它论证为什么每个层级都对你的成功构成真正威胁——而不只是那些最容易反驳的威胁版本。</p>
+    </div>
+    <div class="exercise">
+      <p>先自己写访谈问题草稿，然后让 Claude 审计它们。特别让它标出任何引导式、面向未来、太宽泛、或可能引出"社会期望回答"而非诚实回答的问题。然后让它为访谈中最可能产生回避的节点，各建议一个追问。</p>
+    </div>
+    <div class="exercise">
+      <p>每完成五次访谈后，指挥 Claude Cowork 综合你的笔记，产出两份清单：支持你假设的证据，以及挑战它的证据。如果第一份清单明显比第二份长，让 Claude 帮你判断——这种不对称反映的是数据中真正存在的模式，还是你希望在数据中看到的模式？</p>
+    </div>
+    <div class="stage-transition">
+      创始人核心问题：<strong>"这值得做吗？"</strong> → 下一阶段：<strong>"我们应该先构建什么？"</strong>
+    </div>
   </div>
 </section>
 
-<!-- ===== CHAPTER 4 ===== -->
 <section class="chapter" id="ch4">
   <div class="chapter-header">
+    <span class="toggle-icon">▼</span>
     <span class="chapter-num">Chapter 4</span>
     <h2>MVP 阶段</h2>
+    <span class="chapter-check">✅</span>
   </div>
-
-  <p>许多创始人把 MVP 阶段当作一个构建阶段，但事实上，<strong>MVP 阶段本质上仍然是一个证据收集的过程</strong>。区别在于，你现在收集的是关于<strong>解决方案</strong>而非问题空间的证据——具体来说，是否有真实、可识别的人群觉得它足够有价值来使用、回访、付费或推荐给他人。</p>
-
-  <h3>核心目标</h3>
-  <p><strong>将一个经过验证的问题转化为一个真实用户会使用的可运行产品。</strong>这不是包含所有路线图功能的完整版本，而是你的 idea 最小、最聚焦的一次迭代。与此同时，如何构建决定了以后什么是可能的——快速前进，但不能累积那种会复利的技术债。</p>
-
-  <p>从第一天起就投资于<strong>持久上下文</strong>：在 AI 原生创业公司中，你的代码库是你与 AI 在每个 session 中协作的东西——这让代码的可读性成为基础工程。跳过 Spec、架构决策和 CLAUDE.md 的创始人，迟早会撞上一堵可预测的墙。</p>
-
-  <div class="criteria">
-    <h4>退出标准：产品-市场匹配的真正证据</h4>
-    <p>证明一个具体、可识别的人群觉得产品足够有价值，以至于会回访（留存）、付费（收入）或推荐给他人（推荐）。</p>
-  </div>
-
-  <h3>主要挑战</h3>
-
-  <div class="challenge">
-    <span class="challenge-label">挑战一</span>
-    <h4>智能体技术债</h4>
-    <p>AI 基本消除了曾经控制什么能进入生产环节的每一项自然瓶颈，速度是被保证的——但当速度是唯一考量的变量时，可能累积下日后难以偿还的技术债。</p>
-    <p><strong>AI 技术债是复利的。</strong>当没有 Spec 和架构约束以 AI 可读的形式被记录下来时，每个 session 都从零开始重新推导基础决策，而这些决策会漂移。最终得到的代码库没有连贯的心智模型——不是因为任何一块单独看很糟糕，而是因为每一块都从未被设计成彼此配合。</p>
-  </div>
-
-  <div class="challenge">
-    <span class="challenge-label">挑战二</span>
-    <h4>被虚假的产品-市场匹配迷惑</h4>
-    <p>AI 工具可以产生令人印象深刻的数据，但这些并不保证市场需要你的产品。发布能量来自短暂、难以复现的力量：创始人自己的人脉、投资人其他被投公司的潜在客户、或 Hacker News 标题带来的流量尖峰——这些都不能可靠预测第六周或第十二周会发生什么。</p>
-  </div>
-
-  <div class="challenge">
-    <span class="challenge-label">挑战三</span>
-    <h4>零摩擦的范围蔓延</h4>
-    <p>当构建感觉毫不费力、几乎免费时，"再加一个酷功能"的冲动永远存在。每项新增单独看都无可厚非，但产品在原定边界之外不断蔓延，就会丧失方向和势能。</p>
-    <p><strong>解药：</strong>在构建开始之前就写下来的范围定义——描述产品做什么、有意不做什么、以及来自真实用户的何种具体证据能够证明添加新功能是合理的。</p>
-  </div>
-
-  <div class="challenge">
-    <span class="challenge-label">挑战四</span>
-    <h4>安全性的"无知之殇"</h4>
-    <p>智能体编程工具生成能跑的代码，而非天生安全的代码。功能代码很容易判断——功能要么能工作，要么不能。但安全漏洞在被利用之前是隐形的，这意味着没有自然的反馈回路来提醒首次创业的创始人出问题了。</p>
-  </div>
-
-  <h3>Claude 如何帮助 MVP 阶段的创始人</h3>
-
-  <div class="exercise">
-    <p><strong>在写代码之前定义架构：</strong>打开 Claude Code 之前，先打开 Claude，描述你正在构建什么——它解决的核心问题、服务的用户群、未来六个月实际预期的规模。让它帮你定义架构原则、应规避的依赖、有意识接受的权衡取舍。然后将输出保存为 CLAUDE.md 文件——这是你的架构上下文文档，每个后续 session 都依赖它。</p>
-  </div>
-
-  <div class="exercise">
-    <p><strong>定义并执行 MVP 范围：</strong>让 Claude 帮你创建一份范围文档，描述 MVP 做什么、有意不做什么、以及什么具体证据能证明添加新功能是合理的。当新功能想法浮现时，用 Claude 压力测试这到底是来自用户的真实信号，还是创始人热情伪装成了产品思维。</p>
-  </div>
-
-  <div class="exercise">
-    <p><strong>Session 模板：</strong>创建包含架构上下文、具体任务和约束的 session 模板。每次 session 结束时，在上下文文档中添加简短日志：记录构建了什么、做了什么决策、引入了什么假设。五分钟的文档记录，是对抗架构漂移的廉价保险。</p>
-  </div>
-
-  <div class="exercise">
-    <p><strong>在发布前构建度量框架：</strong>在第一个用户出现之前，确立你的度量框架。设定好留存基准、激活标准、Day 7 和 Day 30 目标。定义"假阳性"长什么样——有注册无激活、有收入无留存。当数据到来时，让 Claude 构建反对你自己牵引力的对抗性论证。</p>
-  </div>
-
-  <div class="exercise">
-    <p><strong>朝证据迭代，而非朝完整性迭代：</strong>如果你完成了三轮或更多轮迭代，却未朝 PMF 基准取得实质性进展，用 Claude 做一次诊断——喂给它留存数据、用户反馈和原始问题假设，让它回答：数据中是否有群体与众不同？设计价值与体验价值的差距是定位问题还是产品问题？当前产品找到真正 PMF 的场景是否现实？</p>
+  <div class="chapter-body">
+    <p>许多创始人把 MVP 阶段当作一个构建阶段，但事实上，<strong>MVP 阶段本质上仍然是一个证据收集的过程</strong>。区别在于，你现在收集的是关于<strong>解决方案</strong>而非问题空间的证据——具体来说，是否有真实、可识别的人群觉得它足够有价值来使用、回访、付费或推荐给他人。</p>
+    <h3>核心目标</h3>
+    <p><strong>将一个经过验证的问题转化为一个真实用户会使用的可运行产品。</strong>这不是包含所有路线图功能的完整版本，而是你的 idea 最小、最聚焦的一次迭代。与此同时，如何构建决定了以后什么是可能的——快速前进，但不能累积那种会复利的技术债。</p>
+    <p>从第一天起就投资于<strong>持久上下文</strong>：在 AI 原生创业公司中，你的代码库是你与 AI 在每个 session 中协作的东西——这让代码的可读性成为基础工程。</p>
+    <div class="criteria">
+      <h4>退出标准：产品-市场匹配的真正证据</h4>
+      <p>证明一个具体、可识别的人群觉得产品足够有价值，以至于会回访（留存）、付费（收入）或推荐给他人（推荐）。</p>
+    </div>
+    <h3>主要挑战</h3>
+    <div class="challenge">
+      <span class="challenge-label">挑战一</span>
+      <h4>智能体技术债</h4>
+      <p>AI 基本消除了曾经控制什么能进入生产环节的每一项自然瓶颈，速度是被保证的——但当速度是唯一考量的变量时，可能累积下日后难以偿还的技术债。</p>
+      <p><strong>AI 技术债是复利的。</strong>当没有 Spec 和架构约束以 AI 可读的形式被记录下来时，每个 session 都从零开始重新推导基础决策，而这些决策会漂移。最终得到的代码库没有连贯的心智模型——不是因为任何一块单独看很糟糕，而是因为每一块都从未被设计成彼此配合。</p>
+    </div>
+    <div class="challenge">
+      <span class="challenge-label">挑战二</span>
+      <h4>被虚假的产品-市场匹配迷惑</h4>
+      <p>AI 工具可以产生令人印象深刻的数据，但这些并不保证市场需要你的产品。发布能量来自短暂、难以复现的力量：创始人自己的人脉、投资人其他被投公司的潜在客户、或 Hacker News 标题带来的流量尖峰——这些都不能可靠预测第六周或第十二周会发生什么。</p>
+    </div>
+    <div class="challenge">
+      <span class="challenge-label">挑战三</span>
+      <h4>零摩擦的范围蔓延</h4>
+      <p>当构建感觉毫不费力、几乎免费时，"再加一个酷功能"的冲动永远存在。每项新增单独看都无可厚非，但产品在原定边界之外不断蔓延，就会丧失方向和势能。</p>
+      <p><strong>解药：</strong>在构建开始之前就写下来的范围定义——描述产品做什么、有意不做什么、以及来自真实用户的何种具体证据能够证明添加新功能是合理的。</p>
+    </div>
+    <div class="challenge">
+      <span class="challenge-label">挑战四</span>
+      <h4>安全性的"无知之殇"</h4>
+      <p>智能体编程工具生成能跑的代码，而非天生安全的代码。功能代码很容易判断——功能要么能工作，要么不能。但安全漏洞在被利用之前是隐形的，这意味着没有自然的反馈回路来提醒首次创业的创始人出问题了。</p>
+    </div>
+    <h3>Claude 如何帮助 MVP 阶段的创始人</h3>
+    <div class="exercise">
+      <p><strong>在写代码之前定义架构：</strong>打开 Claude Code 之前，先打开 Claude，描述你正在构建什么——它解决的核心问题、服务的用户群、未来六个月实际预期的规模。让它帮你定义架构原则、应规避的依赖、有意识接受的权衡取舍。然后将输出保存为 CLAUDE.md 文件——这是你的架构上下文文档，每个后续 session 都依赖它。</p>
+    </div>
+    <div class="exercise">
+      <p><strong>定义并执行 MVP 范围：</strong>让 Claude 帮你创建一份范围文档，描述 MVP 做什么、有意不做什么、以及什么具体证据能证明添加新功能是合理的。当新功能想法浮现时，用 Claude 压力测试这到底是来自用户的真实信号，还是创始人热情伪装成了产品思维。</p>
+    </div>
+    <div class="exercise">
+      <p><strong>Session 模板：</strong>创建包含架构上下文、具体任务和约束的 session 模板。每次 session 结束时，在上下文文档中添加简短日志：记录构建了什么、做了什么决策、引入了什么假设。五分钟的文档记录，是对抗架构漂移的廉价保险。</p>
+    </div>
+    <div class="exercise">
+      <p><strong>在发布前构建度量框架：</strong>在第一个用户出现之前，确立你的度量框架。设定好留存基准、激活标准、Day 7 和 Day 30 目标。定义"假阳性"长什么样——有注册无激活、有收入无留存。当数据到来时，让 Claude 构建反对你自己牵引力的对抗性论证。</p>
+    </div>
+    <div class="exercise">
+      <p><strong>朝证据迭代，而非朝完整性迭代：</strong>如果你完成了三轮或更多轮迭代，却未朝 PMF 基准取得实质性进展，用 Claude 做一次诊断——喂给它留存数据、用户反馈和原始问题假设，让它回答：数据中是否有群体与众不同？设计价值与体验价值的差距是定位问题还是产品问题？当前产品找到真正 PMF 的场景是否现实？</p>
+    </div>
   </div>
 </section>
 
-<!-- ===== CHAPTER 5 ===== -->
 <section class="chapter" id="ch5">
   <div class="chapter-header">
+    <span class="toggle-icon">▼</span>
     <span class="chapter-num">Chapter 5</span>
     <h2>产品发布阶段 Launch Stage</h2>
+    <span class="chapter-check">✅</span>
   </div>
-
-  <p>如果 MVP 阶段是关于证明你的产品值得存在，那发布阶段就是关于<strong>证明你的业务值得成长。</strong></p>
-
-  <h3>核心目标</h3>
-  <p>将早期牵引力转化为<strong>可重复的、可持续的增长引擎</strong>。除了让产品达到生产就绪状态，还必须加固底层基础设施，同时围绕产品构建一个真正的公司。</p>
-
-  <p>目标不是把自己从公司中移除，而是构建<strong>释放你注意力的运营系统</strong>——让你将精力投入到只有创始人才能做出的决策上。</p>
-
-  <div class="criteria">
-    <h4>退出标准（三项缺一不可）</h4>
-    <ol>
-      <li><strong>增长是可重复的、渠道驱动的。</strong>通过特定渠道以已知单位经济模型可预测地获取用户：CAC、LTV 和回收期是你知道并能为之辩护的数字。</li>
-      <li><strong>产品能处理生产级工作负载。</strong>基础设施已加固，安全与合规已就绪，在真实生产条件下可靠性经得起考验。</li>
-      <li><strong>运营在没有创始人瓶颈的情况下运转。</strong>流程已存在，自动化已就位。你不再是亲自处理支持、分诊、冲刺规划或报表的那个人。</li>
-    </ol>
-  </div>
-
-  <h3>主要挑战</h3>
-
-  <div class="challenge">
-    <span class="challenge-label">挑战一</span>
-    <h4>技术债到期催缴</h4>
-    <p>为速度和验证而构建的 MVP 代码跑得够好，足以证明产品可行——但生产流量、新功能和日益增长的复杂性正在暴露那些走过的捷径。在 MVP 阶段累积技术债是合理权衡，但到了发布阶段，这些债开始产生利息——拖得越久，修复成本越高。</p>
-  </div>
-
-  <div class="challenge">
-    <span class="challenge-label">挑战二</span>
-    <h4>创始人成为瓶颈</h4>
-    <p>在 MVP 阶段，创始人在每个循环中参与是资产；在发布阶段，同样的本能变成了瓶颈。标志性迹象：本应一小时做出的决策现在需要一周才能轮到你来处理；支持请求积压因为只有你知道答案；运营任务只有在你亲自记得时才发生。</p>
-  </div>
-
-  <div class="challenge">
-    <span class="challenge-label">挑战三</span>
-    <h4>安全与合规不再是可推迟的</h4>
-    <p>在 MVP 阶段保持简单是可以接受的——但到了有了真实用户、真实数据和潜在企业合同的现在，简单的安全和合规变成了包袱。处理客户数据、处理支付或向受监管行业销售的时刻，合规要求板上钉钉地适用。</p>
-  </div>
-
-  <div class="challenge">
-    <span class="challenge-label">挑战四</span>
-    <h4>还没准备好就扩张</h4>
-    <p>初始牵引力是真实的，但它也专属于你的早期受众。过早扩张到有显著差异的市场中，会引入产品从未围绕设计的新变量，让你失去清晰解读自己数据的能力。</p>
-  </div>
-
-  <h3>Claude 如何帮助发布阶段的创始人</h3>
-  <p>三种形式的 Claude 在发布阶段全部投入使用，且彼此支撑：每个工具产生的输出，成为其他两个的输入。结果有机地产生复利——同时使用三个工具的创始人，获得的结果远超单独使用任何一个。</p>
-
-  <div class="exercise">
-    <p><strong>审计 MVP 代码库：</strong>指挥 Claude Code 审计 MVP 代码库，产出结构弱点、测试覆盖率缺口和重构候选的优先级列表。然后反馈给 Claude，让它将修复工作排序到多个冲刺周期中——优先处理的重大问题、可并行处理的事项、可以等待的事项。同时将 MVP 期间只存在于你脑海中的架构决策写进 CLAUDE.md。</p>
-  </div>
-
-  <div class="exercise">
-    <p><strong>构建取代创始人注意力的系统：</strong>用 Claude Cowork 对你当前的运营负荷进行结构化审计——记录每个重复性任务、每个落在你桌子上的决策、每个只因为你亲自记得才发生的工作流。然后分类：哪些可以完全自动化、哪些需要人但不一定是你、哪些真正需要创始人的判断力。</p>
-  </div>
-
-  <div class="exercise">
-    <p><strong>将安全与合规作为产品工作流：</strong>用 Claude Code 进行面向目标市场所需框架的代码级安全审查。将输出反馈给 Claude，产出优先级安全修复序列和目标客户在签署前预期看到的合规文档草稿。注意：AI 扫描是辅助，不能替代合格的合规审查。</p>
+  <div class="chapter-body">
+    <p>如果 MVP 阶段是关于证明你的产品值得存在，那发布阶段就是关于<strong>证明你的业务值得成长。</strong></p>
+    <h3>核心目标</h3>
+    <p>将早期牵引力转化为<strong>可重复的、可持续的增长引擎</strong>。除了让产品达到生产就绪状态，还必须加固底层基础设施，同时围绕产品构建一个真正的公司。</p>
+    <p>目标不是把自己从公司中移除，而是构建<strong>释放你注意力的运营系统</strong>——让你将精力投入到只有创始人才能做出的决策上。</p>
+    <div class="criteria">
+      <h4>退出标准（三项缺一不可）</h4>
+      <ol class="checkable">
+        <li><span class="cb"></span><span class="ct"><strong>增长是可重复的、渠道驱动的。</strong>通过特定渠道以已知单位经济模型可预测地获取用户：CAC、LTV 和回收期是你知道并能为之辩护的数字。</span></li>
+        <li><span class="cb"></span><span class="ct"><strong>产品能处理生产级工作负载。</strong>基础设施已加固，安全与合规已就绪，在真实生产条件下可靠性经得起考验。</span></li>
+        <li><span class="cb"></span><span class="ct"><strong>运营在没有创始人瓶颈的情况下运转。</strong>流程已存在，自动化已就位。你不再是亲自处理支持、分诊、冲刺规划或报表的那个人。</span></li>
+      </ol>
+    </div>
+    <h3>主要挑战</h3>
+    <div class="challenge">
+      <span class="challenge-label">挑战一</span>
+      <h4>技术债到期催缴</h4>
+      <p>为速度和验证而构建的 MVP 代码跑得够好，足以证明产品可行——但生产流量、新功能和日益增长的复杂性正在暴露那些走过的捷径。在 MVP 阶段累积技术债是合理权衡，但到了发布阶段，这些债开始产生利息——拖得越久，修复成本越高。</p>
+    </div>
+    <div class="challenge">
+      <span class="challenge-label">挑战二</span>
+      <h4>创始人成为瓶颈</h4>
+      <p>在 MVP 阶段，创始人在每个循环中参与是资产；在发布阶段，同样的本能变成了瓶颈。标志性迹象：本应一小时做出的决策现在需要一周才能轮到你来处理；支持请求积压因为只有你知道答案；运营任务只有在你亲自记得时才发生。</p>
+    </div>
+    <div class="challenge">
+      <span class="challenge-label">挑战三</span>
+      <h4>安全与合规不再是可推迟的</h4>
+      <p>在 MVP 阶段保持简单是可以接受的——但到了有了真实用户、真实数据和潜在企业合同的现在，简单的安全和合规变成了包袱。</p>
+    </div>
+    <div class="challenge">
+      <span class="challenge-label">挑战四</span>
+      <h4>还没准备好就扩张</h4>
+      <p>初始牵引力是真实的，但它也专属于你的早期受众。过早扩张到有显著差异的市场中，会引入产品从未围绕设计的新变量，让你失去清晰解读自己数据的能力。</p>
+    </div>
+    <h3>Claude 如何帮助发布阶段的创始人</h3>
+    <div class="exercise">
+      <p><strong>审计 MVP 代码库：</strong>指挥 Claude Code 审计 MVP 代码库，产出结构弱点、测试覆盖率缺口和重构候选的优先级列表。然后反馈给 Claude，让它将修复工作排序到多个冲刺周期中。同时将 MVP 期间只存在于你脑海中的架构决策写进 CLAUDE.md。</p>
+    </div>
+    <div class="exercise">
+      <p><strong>构建取代创始人注意力的系统：</strong>用 Claude Cowork 对你当前的运营负荷进行结构化审计——记录每个重复性任务、每个落在你桌子上的决策、每个只因为你亲自记得才发生的工作流。然后分类：哪些可以完全自动化、哪些需要人但不一定是你、哪些真正需要创始人的判断力。</p>
+    </div>
+    <div class="exercise">
+      <p><strong>将安全与合规作为产品工作流：</strong>用 Claude Code 进行面向目标市场所需框架的代码级安全审查。将输出反馈给 Claude，产出优先级安全修复序列和目标客户在签署前预期看到的合规文档草稿。注意：AI 扫描是辅助，不能替代合格的合规审查。</p>
+    </div>
   </div>
 </section>
 
-<!-- ===== CHAPTER 6 ===== -->
 <section class="chapter" id="ch6">
   <div class="chapter-header">
+    <span class="toggle-icon">▼</span>
     <span class="chapter-num">Chapter 6</span>
     <h2>规模化阶段 Scale Stage</h2>
+    <span class="chapter-check">✅</span>
   </div>
-
-  <p>在规模化阶段，创始人的角色重新聚焦——从构建者变为<strong>面向公众的高管</strong>。产品仍然是核心，但你个人的日常工作越来越关于公司本身。当你在努力保持精益的、以 AI 为中心的结构性优势时，注意力必须扩展到分析师简报和 IPO 路演等新活动。</p>
-
-  <h3>核心目标</h3>
-  <p>技术基础设施的规模化工作在持续进行，现在还加上了<strong>组织本身的规模化——并将其成熟为一门真正的生意</strong>。从数千用户到数百万用户，从一个市场到多个市场。</p>
-
-  <p>对于 AI 原生创业公司，目标应该是通过<strong>累积深度来构建可防御的护城河</strong>：来自你构建进产品中的专长、与用户依赖的其他工具的深度集成、以及专有的系统数据和工作流。一直在同一个方向上、在统一基础设施上持续构建的创始人，现在拥有的是真正难以复制的东西。</p>
-
-  <div class="criteria">
-    <h4>退出标准：门槛事件</h4>
-    <p>即使创始人越来越多地不直接运营日常工作，公司仍是可持续的。你已经展示了系统化增长；构建了能满足最苛刻外部审查者的组织治理和合规基础设施；并且对"如果一个资金充足的巨头今天复制你的产品，你的用户会留下来吗？"有扎实的答案。</p>
-    <p>通常表现为三种形式之一：<strong>可持续盈利能力、IPO 就绪状态、或被收购。</strong></p>
-  </div>
-
-  <h3>主要挑战</h3>
-
-  <div class="challenge">
-    <span class="challenge-label">挑战一</span>
-    <h4>委托运营层</h4>
-    <p>规模化阶段的运营系统必须可靠且可持续地运行，无需保姆式照看。根本挑战是识别出那些只存在于创始人脑中或未记录下来的工作流程中的隐性知识，然后将其编纂为文档化、可审计、可转移的系统。</p>
-  </div>
-
-  <div class="challenge">
-    <span class="challenge-label">挑战二</span>
-    <h4>规模化技术运营</h4>
-    <p>客户不再只评估你的产品；他们想知道你的组织能否成为一个可靠的基础设施合作伙伴。挑战变成了围绕代码库构建的一切——支持基础设施、文档和可靠性保证。</p>
-  </div>
-
-  <div class="challenge">
-    <span class="challenge-label">挑战三</span>
-    <h4>横向扩展组织职能</h4>
-    <p>规模化阶段的公司通常需要组织基础设施——招聘、薪酬、会计、法务运营——无论实际上有多少人在运营它。需要发展一个更广泛的运营职能集群。</p>
-  </div>
-
-  <div class="challenge">
-    <span class="challenge-label">挑战四</span>
-    <h4>构建市场进入职能</h4>
-    <p>有机增长有天花板，大多数规模化阶段的创始人在不得不构建真正的 GTM 职能之前就已撞上它。迹象包括：用户增长曲线趋于平缓、客户获取成本攀升、以及管道只有在创始人亲自参与时才推进。</p>
-  </div>
-
-  <h3>Claude 如何帮助规模化阶段的创始人</h3>
-
-  <div class="exercise">
-    <p><strong>将日常运营交给 Claude Cowork：</strong>用 Claude 生成当前运营层的瓶颈地图——每个经过你的工作流、决策和审批。推演如果一周联系不上你，每个会发生什么？停滞不前的那些，就是交接标准、升级路径或异常处理仍需要加强的地方。</p>
-  </div>
-
-  <div class="exercise">
-    <p><strong>规模化为企业级基础设施：</strong>用 Claude 起草和维护企业采购预期看到的那套基础设施——产品文档、支持手册和 SLA。指挥 Claude Code 按企业合同标准审计和加固代码库，构建日志记录、监控、事故响应工具和观测层。Claude Cowork 运行企业支持的运营层——工单路由、升级工作流、续约追踪。</p>
-  </div>
-
-  <div class="exercise">
-    <p><strong>将领域专长转化为 AI 上下文：</strong>通过扩展对话、项目和记忆，创始人可以分享他们所知道的一切——行业术语、监管陷阱、边缘情况——化为结构化、可搜索的上下文。Skills 将重复的工作流编纂为可复用的例程。数月之后，这成为一个专有知识基底层——没有哪个通用 AI 能匹敌。</p>
-  </div>
-
-  <div class="exercise">
-    <p><strong>创建工作流锁定：</strong>让 Claude 帮你构建针对 Top 10 客户的工作流集成审计——记录他们构建的自动化、依赖的集成、通过你产品运行的团队工作流、以及切换成本估计。然后识别模式：什么类型的集成创造了最深度的锁定？你可以构建或启用什么来加深那些目前停留在表面的客户的集成深度？</p>
+  <div class="chapter-body">
+    <p>在规模化阶段，创始人的角色重新聚焦——从构建者变为<strong>面向公众的高管</strong>。产品仍然是核心，但你个人的日常工作越来越关于公司本身。</p>
+    <h3>核心目标</h3>
+    <p>技术基础设施的规模化工作在持续进行，现在还加上了<strong>组织本身的规模化——并将其成熟为一门真正的生意</strong>。从数千用户到数百万用户，从一个市场到多个市场。</p>
+    <p>对于 AI 原生创业公司，目标应该是通过<strong>累积深度来构建可防御的护城河</strong>：来自你构建进产品中的专长、与用户依赖的其他工具的深度集成、以及专有的系统数据和工作流。</p>
+    <div class="criteria">
+      <h4>退出标准：门槛事件</h4>
+      <p>即使创始人越来越多地不直接运营日常工作，公司仍是可持续的。</p>
+      <p>通常表现为三种形式之一：<strong>可持续盈利能力、IPO 就绪状态、或被收购。</strong></p>
+    </div>
+    <h3>主要挑战</h3>
+    <div class="challenge">
+      <span class="challenge-label">挑战一</span>
+      <h4>委托运营层</h4>
+      <p>规模化阶段的运营系统必须可靠且可持续地运行，无需保姆式照看。根本挑战是识别出那些只存在于创始人脑中或未记录下来的工作流程中的隐性知识，然后将其编纂为文档化、可审计、可转移的系统。</p>
+    </div>
+    <div class="challenge">
+      <span class="challenge-label">挑战二</span>
+      <h4>规模化技术运营</h4>
+      <p>客户不再只评估你的产品；他们想知道你的组织能否成为一个可靠的基础设施合作伙伴。挑战变成了围绕代码库构建的一切——支持基础设施、文档和可靠性保证。</p>
+    </div>
+    <div class="challenge">
+      <span class="challenge-label">挑战三</span>
+      <h4>横向扩展组织职能</h4>
+      <p>规模化阶段的公司通常需要组织基础设施——招聘、薪酬、会计、法务运营——无论实际上有多少人在运营它。</p>
+    </div>
+    <div class="challenge">
+      <span class="challenge-label">挑战四</span>
+      <h4>构建市场进入职能</h4>
+      <p>有机增长有天花板，大多数规模化阶段的创始人在不得不构建真正的 GTM 职能之前就已撞上它。迹象包括：用户增长曲线趋于平缓、客户获取成本攀升、以及管道只有在创始人亲自参与时才推进。</p>
+    </div>
+    <h3>Claude 如何帮助规模化阶段的创始人</h3>
+    <div class="exercise">
+      <p><strong>将日常运营交给 Claude Cowork：</strong>用 Claude 生成当前运营层的瓶颈地图——每个经过你的工作流、决策和审批。推演如果一周联系不上你，每个会发生什么？停滞不前的那些，就是交接标准、升级路径或异常处理仍需要加强的地方。</p>
+    </div>
+    <div class="exercise">
+      <p><strong>规模化为企业级基础设施：</strong>用 Claude 起草和维护企业采购预期看到的那套基础设施——产品文档、支持手册和 SLA。指挥 Claude Code 按企业合同标准审计和加固代码库，构建日志记录、监控、事故响应工具和观测层。Claude Cowork 运行企业支持的运营层——工单路由、升级工作流、续约追踪。</p>
+    </div>
+    <div class="exercise">
+      <p><strong>将领域专长转化为 AI 上下文：</strong>通过扩展对话、项目和记忆，创始人可以分享他们所知道的一切——行业术语、监管陷阱、边缘情况——化为结构化、可搜索的上下文。Skills 将重复的工作流编纂为可复用的例程。数月之后，这成为一个专有知识基底层——没有哪个通用 AI 能匹敌。</p>
+    </div>
+    <div class="exercise">
+      <p><strong>创建工作流锁定：</strong>让 Claude 帮你构建针对 Top 10 客户的工作流集成审计——记录他们构建的自动化、依赖的集成、通过你产品运行的团队工作流、以及切换成本估计。然后识别模式：什么类型的集成创造了最深度的锁定？你可以构建或启用什么来加深那些目前停留在表面的客户的集成深度？</p>
+    </div>
   </div>
 </section>
 
-<!-- ===== CHAPTER 7 ===== -->
 <section class="chapter" id="ch7">
   <div class="chapter-header">
+    <span class="toggle-icon">▼</span>
     <span class="chapter-num">Chapter 7</span>
     <h2>同一个角色，全新的规则</h2>
+    <span class="chapter-check">✅</span>
   </div>
-
-  <p>在 AI 时代，创始人的工作没有变：发现真实的问题，构建解决问题的东西，将其规模化成一个有价值的企业。<strong>改变的是抵达终点的路径。</strong>跨越四个阶段——想法、MVP、发布、规模化——AI 将季度压缩为周。</p>
-
-  <p>过去需要数月的验证周期，现在只需几个下午。一个可运作的原型不再需要一个具备正确技术栈的联合创始人，它需要一个清晰的问题和几个与编程智能体的聚焦 session。发布准备度从一次上线前的慌乱冲刺，变成一个持续性的工作流。而在规模化阶段，过去强制让早期招聘担任"救火员"角色的运营负担，越来越多地可以移交给 AI——让你的团队把注意力花在构成你护城河的判断力决策上。</p>
-
-  <div class="highlight-box">
-    <p style="font-size:20px; text-align:center; margin:0;"><strong>瓶颈不再是你能构建什么，而是你选择构建什么。</strong></p>
+  <div class="chapter-body">
+    <p>在 AI 时代，创始人的工作没有变：发现真实的问题，构建解决问题的东西，将其规模化成一个有价值的企业。<strong>改变的是抵达终点的路径。</strong>跨越四个阶段——想法、MVP、发布、规模化——AI 将季度压缩为周。</p>
+    <p>过去需要数月的验证周期，现在只需几个下午。一个可运作的原型不再需要一个具备正确技术栈的联合创始人，它需要一个清晰的问题和几个与编程智能体的聚焦 session。发布准备度从一次上线前的慌乱冲刺，变成一个持续性的工作流。而在规模化阶段，过去强制让早期招聘担任"救火员"角色的运营负担，越来越多地可以移交给 AI——让你的团队把注意力花在构成你护城河的判断力决策上。</p>
+    <div class="highlight-box">
+      <p style="font-size:20px; text-align:center; margin:0;"><strong>瓶颈不再是你能构建什么，而是你选择构建什么。</strong></p>
+    </div>
   </div>
 </section>
 
-<!-- ===== RESOURCES ===== -->
 <section class="resources" id="resources">
   <h2>资源</h2>
-
   <h3>使用 Claude 构建</h3>
   <ul>
     <li>为创业公司构建 AI 智能体 —— 分享创业公司如何使用智能体在规模化过程中减少对创始人的依赖</li>
@@ -806,7 +645,6 @@
     <li>Claude Cowork 入门 —— 设置 Claude Cowork 并实现 Skills、插件和其他功能</li>
     <li>教程 —— claude.com/resources/tutorials 提供可搜索的实操指南列表</li>
   </ul>
-
   <h3>创始人故事</h3>
   <ul>
     <li><strong>三家 YC 创业公司</strong> —— HumanLayer (F24)、Ambral (W25) 和 Vulcan Technologies (S25) 使用 Claude 快速构建的故事</li>
@@ -818,7 +656,6 @@
     <li><strong>Duvo</strong> —— 完全构建在 Claude 之上，使用 Agent SDK 编排采购、供应链和品类管理流程</li>
     <li><strong>Wordsmith</strong> —— 律师转 CTO 创立，Claude 是合同审查和文件审查能力的推理引擎</li>
   </ul>
-
   <h3>创业支持与机会</h3>
   <ul>
     <li><strong>Anthropic Startups Program</strong> —— 为与 Anthropic 的 VC 伙伴合作的创业公司提供免费 API 额度、最高级别速率限制和独家创始人活动邀请</li>
@@ -832,6 +669,439 @@
 <footer class="footer">
   <p>基于 <a href="https://claude.ai" style="color:inherit">Anthropic</a> 原著制作 &nbsp;·&nbsp; 仅供学习</p>
 </footer>
+
+</div><!-- /main -->
+
+<!-- HIGHLIGHT TOOLTIP -->
+<div id="hl-tooltip">
+  <button id="hl-do">🖊 高亮</button>
+  <button id="hl-remove">✕ 取消</button>
+</div>
+
+<!-- MOBILE SIDEBAR TOGGLE -->
+<button id="sidebar-toggle">☰</button>
+
+<script>
+(function() {
+  'use strict';
+  const STORAGE_KEY = 'playbook-state';
+
+  // ===== STORAGE =====
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch(e) { return {}; }
+  }
+  function saveState(s) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(e) {} }
+
+  let state = loadState();
+  state.readChapters = state.readChapters || [];
+  state.completedChecks = state.completedChecks || {};
+  state.highlights = state.highlights || [];
+  state.fontSize = state.fontSize || 17;
+  state.theme = state.theme || 'auto';
+
+  function persist() {
+    saveState(state);
+  }
+
+  // ===== THEME =====
+  function applyTheme(t) {
+    document.documentElement.classList.remove('theme-light', 'theme-dark');
+    if (t === 'light') document.documentElement.classList.add('theme-light');
+    else if (t === 'dark') document.documentElement.classList.add('theme-dark');
+    state.theme = t; persist();
+  }
+  applyTheme(state.theme);
+
+  document.getElementById('btn-theme').addEventListener('click', function() {
+    var cycle = { auto: 'light', light: 'dark', dark: 'auto' };
+    applyTheme(cycle[state.theme]);
+    var labels = { auto: '🌓', light: '☀️', dark: '🌙' };
+    this.textContent = labels[state.theme];
+  });
+  document.getElementById('btn-theme').textContent = { auto: '🌓', light: '☀️', dark: '🌙' }[state.theme];
+
+  // ===== FONT SIZE =====
+  function applyFontSize() {
+    document.documentElement.style.setProperty('--font-size', state.fontSize + 'px');
+    persist();
+  }
+  applyFontSize();
+  document.getElementById('btn-font-down').addEventListener('click', function() {
+    if (state.fontSize > 14) { state.fontSize -= 1; applyFontSize(); }
+  });
+  document.getElementById('btn-font-up').addEventListener('click', function() {
+    if (state.fontSize < 22) { state.fontSize += 1; applyFontSize(); }
+  });
+
+  // ===== SIDEBAR =====
+  var chapters = document.querySelectorAll('.chapter');
+  var sidebarNav = document.getElementById('sidebar-nav');
+  var sidebar = document.getElementById('sidebar');
+  var sidebarToggle = document.getElementById('sidebar-toggle');
+  var sidebarOverlay = document.getElementById('sidebar-overlay');
+
+  // Build sidebar nav
+  var navHTML = '';
+  chapters.forEach(function(ch) {
+    var h2 = ch.querySelector('h2');
+    var title = h2 ? h2.textContent : '';
+    navHTML += '<a href="#' + ch.id + '" data-ch="' + ch.id + '"><span class="dot"></span>' + title + '</a>';
+  });
+  sidebarNav.innerHTML = navHTML;
+
+  function updateSidebar() {
+    var dots = sidebarNav.querySelectorAll('.dot');
+    dots.forEach(function(d) { d.classList.remove('done'); });
+    state.readChapters.forEach(function(id) {
+      var a = sidebarNav.querySelector('[data-ch="' + id + '"]');
+      if (a) a.querySelector('.dot').classList.add('done');
+    });
+  }
+  updateSidebar();
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    sidebarOverlay.classList.add('open');
+  }
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    sidebarOverlay.classList.remove('open');
+  }
+  sidebarToggle.addEventListener('click', openSidebar);
+  sidebarOverlay.addEventListener('click', closeSidebar);
+  sidebarNav.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() { closeSidebar(); });
+  });
+
+  // ===== COLLAPSE =====
+  chapters.forEach(function(ch) {
+    var header = ch.querySelector('.chapter-header');
+    header.addEventListener('click', function() {
+      ch.classList.toggle('collapsed');
+    });
+  });
+
+  // ===== INTERSECTION OBSERVER =====
+  var observerOptions = { rootMargin: '-10% 0px -70% 0px' };
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      var id = entry.target.id;
+      var link = sidebarNav.querySelector('[data-ch="' + id + '"]');
+      if (entry.isIntersecting) {
+        sidebarNav.querySelectorAll('a').forEach(function(a) { a.classList.remove('active'); });
+        if (link) link.classList.add('active');
+        // Mark as read
+        if (state.readChapters.indexOf(id) === -1) {
+          state.readChapters.push(id);
+          persist();
+          updateSidebar();
+          updateChapterChecks();
+        }
+      }
+    });
+  }, observerOptions);
+
+  chapters.forEach(function(ch) { observer.observe(ch); });
+
+  // Chapter check marks
+  function updateChapterChecks() {
+    chapters.forEach(function(ch) {
+      var check = ch.querySelector('.chapter-check');
+      if (state.readChapters.indexOf(ch.id) !== -1) {
+        check.classList.add('done');
+      } else {
+        check.classList.remove('done');
+      }
+    });
+  }
+  updateChapterChecks();
+
+  // ===== PROGRESS =====
+  function updateProgress() {
+    var total = chapters.length;
+    var read = state.readChapters.length;
+    var pct = Math.round((read / total) * 100);
+    document.getElementById('progress-bar').style.width = pct + '%';
+  }
+  updateProgress();
+
+  // ===== CHECKLIST =====
+  function makeCheckable() {
+    document.querySelectorAll('.criteria ol, .criteria ul').forEach(function(ol) {
+      if (!ol.classList.contains('checkable')) return;
+      var id = 'check-' + Math.random().toString(36).slice(2, 9);
+      ol.setAttribute('data-check-id', id);
+      ol.querySelectorAll('li').forEach(function(li, i) {
+        li.addEventListener('click', function(e) {
+          e.stopPropagation();
+          li.classList.toggle('checked');
+          var key = id + '-' + i;
+          state.completedChecks[key] = li.classList.contains('checked');
+          persist();
+        });
+        // Restore state
+        var key = id + '-' + i;
+        if (state.completedChecks[key]) li.classList.add('checked');
+      });
+    });
+  }
+  makeCheckable();
+
+  // ===== SEARCH =====
+  var searchBox = document.getElementById('search-box');
+  var searchInput = document.getElementById('search-input');
+  var searchCount = document.getElementById('search-count');
+  var currentMatchIdx = -1;
+  var matches = [];
+
+  function clearHighlights() {
+    document.querySelectorAll('.search-highlight').forEach(function(m) {
+      var parent = m.parentNode;
+      parent.replaceChild(document.createTextNode(m.textContent), m);
+      parent.normalize();
+    });
+    matches = [];
+    currentMatchIdx = -1;
+  }
+
+  function doSearch(q) {
+    clearHighlights();
+    if (!q.trim()) { searchCount.textContent = ''; return; }
+    var body = document.querySelector('.container');
+    var walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT, null, false);
+    var textNodes = [];
+    while (walker.nextNode()) {
+      var n = walker.currentNode;
+      if (n.parentElement.closest('style,script,noscript,.search-highlight')) continue;
+      textNodes.push(n);
+    }
+    textNodes.forEach(function(node) {
+      var text = node.textContent;
+      var idx = text.toLowerCase().indexOf(q.toLowerCase());
+      if (idx === -1) return;
+      var frag = document.createDocumentFragment();
+      var start = 0;
+      while (idx !== -1) {
+        if (idx > start) frag.appendChild(document.createTextNode(text.slice(start, idx)));
+        var mark = document.createElement('mark');
+        mark.className = 'search-highlight';
+        mark.textContent = text.slice(idx, idx + q.length);
+        frag.appendChild(mark);
+        matches.push(mark);
+        start = idx + q.length;
+        idx = text.slice(start).toLowerCase().indexOf(q.toLowerCase());
+        if (idx !== -1) idx += start;
+      }
+      if (start < text.length) frag.appendChild(document.createTextNode(text.slice(start)));
+      node.parentNode.replaceChild(frag, node);
+    });
+    searchCount.textContent = matches.length ? matches.length + ' 个结果' : '无结果';
+    if (matches.length) { currentMatchIdx = 0; activateMatch(); }
+  }
+
+  function activateMatch() {
+    matches.forEach(function(m) { m.classList.remove('active'); });
+    if (currentMatchIdx >= 0 && currentMatchIdx < matches.length) {
+      var m = matches[currentMatchIdx];
+      m.classList.add('active');
+      m.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  document.getElementById('btn-search').addEventListener('click', function() {
+    searchBox.classList.toggle('open');
+    if (searchBox.classList.contains('open')) {
+      searchInput.focus();
+      this.classList.add('active');
+    } else {
+      clearHighlights(); searchCount.textContent = '';
+      this.classList.remove('active');
+    }
+  });
+  document.getElementById('search-close').addEventListener('click', function() {
+    searchBox.classList.remove('open');
+    clearHighlights(); searchCount.textContent = '';
+    document.getElementById('btn-search').classList.remove('active');
+  });
+  searchInput.addEventListener('input', function() { doSearch(this.value); });
+  document.getElementById('search-prev').addEventListener('click', function() {
+    if (!matches.length) return;
+    currentMatchIdx = (currentMatchIdx - 1 + matches.length) % matches.length;
+    activateMatch();
+  });
+  document.getElementById('search-next').addEventListener('click', function() {
+    if (!matches.length) return;
+    currentMatchIdx = (currentMatchIdx + 1) % matches.length;
+    activateMatch();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      searchBox.classList.remove('open');
+      clearHighlights(); searchCount.textContent = '';
+      document.getElementById('btn-search').classList.remove('active');
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      searchBox.classList.add('open');
+      searchInput.focus();
+      document.getElementById('btn-search').classList.add('active');
+    }
+  });
+
+  // ===== TEXT HIGHLIGHT =====
+  var tooltip = document.getElementById('hl-tooltip');
+  var lastSelection = null;
+
+  function restoreHighlights() {
+    state.highlights.forEach(function(hl) {
+      var ch = document.getElementById(hl.chapterId);
+      if (!ch) return;
+      highlightTextInNode(ch, hl.text, hl.offset);
+    });
+  }
+
+  function highlightTextInNode(root, text, nth) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+    var count = 0;
+    while (walker.nextNode()) {
+      var node = walker.currentNode;
+      if (node.parentElement.closest('.search-highlight,.text-hl,style,script')) continue;
+      var idx = node.textContent.indexOf(text);
+      while (idx !== -1) {
+        if (count === nth) {
+          var mark = document.createElement('mark');
+          mark.className = 'text-hl';
+          mark.setAttribute('data-hl-text', text);
+          mark.textContent = text;
+          var after = node.splitText(idx);
+          after.splitText(text.length);
+          node.parentNode.replaceChild(mark, after.previousSibling);
+          return;
+        }
+        count++;
+        idx = node.textContent.indexOf(text, idx + 1);
+      }
+    }
+  }
+
+  document.addEventListener('mouseup', function(e) {
+    setTimeout(function() {
+      var sel = window.getSelection();
+      if (!sel || sel.isCollapsed || !sel.toString().trim()) {
+        tooltip.style.display = 'none';
+        return;
+      }
+      var text = sel.toString().trim();
+      if (text.length < 3) { tooltip.style.display = 'none'; return; }
+      // Check if inside main content
+      var container = document.querySelector('.container');
+      if (!container.contains(sel.anchorNode)) { tooltip.style.display = 'none'; return; }
+      lastSelection = { text: text, range: sel.getRangeAt(0).cloneRange() };
+      var rect = sel.getRangeAt(0).getBoundingClientRect();
+      tooltip.style.display = 'flex';
+      tooltip.style.left = (rect.left + rect.width / 2 - 50) + 'px';
+      tooltip.style.top = (rect.bottom + 8 + window.scrollY) + 'px';
+    }, 10);
+  });
+
+  document.addEventListener('mousedown', function(e) {
+    if (!tooltip.contains(e.target)) tooltip.style.display = 'none';
+  });
+
+  document.getElementById('hl-do').addEventListener('click', function() {
+    if (!lastSelection) return;
+    var text = lastSelection.text;
+    var chapter = lastSelection.range.startContainer.parentElement.closest('.chapter');
+    var chapterId = chapter ? chapter.id : 'unknown';
+    // Count existing highlights of same text in same chapter
+    var offset = state.highlights.filter(function(h) {
+      return h.chapterId === chapterId && h.text === text;
+    }).length;
+    // Apply highlight
+    highlightTextInNode(chapter || document.querySelector('.container'), text, offset);
+    state.highlights.push({ chapterId: chapterId, text: text, offset: offset, timestamp: Date.now() });
+    persist();
+    updateHighlightsList();
+    tooltip.style.display = 'none';
+    window.getSelection().removeAllRanges();
+  });
+
+  document.getElementById('hl-remove').addEventListener('click', function() {
+    tooltip.style.display = 'none';
+    window.getSelection().removeAllRanges();
+  });
+
+  // Click on existing highlight to remove
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('text-hl')) {
+      var text = e.target.getAttribute('data-hl-text');
+      // Remove from state
+      state.highlights = state.highlights.filter(function(h) {
+        return !(h.text === text);
+      });
+      persist();
+      // Replace mark with text
+      var parent = e.target.parentNode;
+      parent.replaceChild(document.createTextNode(text), e.target);
+      parent.normalize();
+      updateHighlightsList();
+    }
+  });
+
+  function updateHighlightsList() {
+    var container = document.getElementById('hl-list');
+    if (!state.highlights.length) {
+      container.innerHTML = '<span class="hl-empty">选中文字后可高亮</span>';
+      return;
+    }
+    container.innerHTML = state.highlights.slice(-20).reverse().map(function(hl) {
+      return '<div class="hl-item" data-text="' + hl.text.replace(/"/g, '&quot;') + '">' +
+        hl.text.slice(0, 40) + (hl.text.length > 40 ? '...' : '') + '</div>';
+    }).join('');
+  }
+
+  restoreHighlights();
+  updateHighlightsList();
+
+  // ===== INIT =====
+  function initChapterBodyHeights() {
+    chapters.forEach(function(ch) {
+      var body = ch.querySelector('.chapter-body');
+      if (body) body.style.maxHeight = body.scrollHeight + 'px';
+    });
+  }
+  initChapterBodyHeights();
+
+  // Recalculate on resize
+  var resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      chapters.forEach(function(ch) {
+        if (!ch.classList.contains('collapsed')) {
+          var body = ch.querySelector('.chapter-body');
+          if (body) body.style.maxHeight = body.scrollHeight + 'px';
+        }
+      });
+    }, 200);
+  });
+
+  // Ctrl+Shift+H to list all highlights
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.shiftKey && e.key === 'H') {
+      openSidebar();
+    }
+  });
+
+  console.log('🚀 Founder\'s Playbook interactive reader ready.');
+  console.log('  ⌘K / Ctrl+K  → 搜索');
+  console.log('  ⌘⇧H / Ctrl+Shift+H → 打开侧边栏（查看高亮）');
+  console.log('  选中文字 → 高亮');
+  console.log('  点击章节标题 → 折叠/展开');
+  console.log('  点击练习/标准中的列表项 → 勾选完成');
+})();
+</script>
 
 </body>
 </html>
