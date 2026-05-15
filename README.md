@@ -1,23 +1,61 @@
-# 创始人手册：构建 AI 原生创业公司
+# The Founder's Playbook / 创始人手册
 
-> *The Founder's Playbook: Building an AI-Native Startup* 学习工具
+> *Building an AI-Native Startup* — An interactive learning tool based on the book by Anthropic.
 >
-> 原书由 Anthropic 发布，面向 2026 年及以后的创业者。
+> *构建 AI 原生创业公司* —— 基于 Anthropic 原书制作的交互式学习工具。
 
-## 内容简介
+---
 
-AI 正在重塑创业公司的构建方式。从未写过一行代码的创始人，如今能直接交付生产级应用；"十人独角兽"已从逆袭传说，变成了可主动选择的战略路径。
+[中文](#中文) &nbsp;|&nbsp; [English](#english)
 
-本手册重新绘制了创业旅程的四个核心阶段——**想法、MVP、发布、规模化**——基于 AI 原生的全新现实。逐一审视：每个阶段长什么样？该用什么工具？如何压缩时间线？
+---
 
-## 在线阅读
+## 中文
 
-👉 **[在线浏览 HTML 版](https://swiftsteed.github.io/building-ai-native-startup/)**
+### 在线阅读
 
-## 文件
+👉 **[swiftsteed.github.io/building-ai-native-startup](https://swiftsteed.github.io/building-ai-native-startup/)**
 
-- `index.html` — 单文件 HTML 学习页面，支持深色模式、移动端适配，直接在浏览器打开即可阅读
+提供中英双版本，进入后选择语言。
 
-## 许可
+### 内容
+
+AI 正在重塑创业公司的构建方式。本手册重新绘制了创业旅程的四个核心阶段——**想法、MVP、发布、规模化**。
+
+### 文件
+
+| 文件 | 说明 |
+|------|------|
+| `index.html` | 双语言入口页面 |
+| `zh.html` | 中文学习页面 |
+| `en.html` | English learning page |
+
+### 许可
 
 原书版权归 Anthropic 所有。本站是一个辅助学习原书的交互式工具。
+
+---
+
+## English
+
+### Read Online
+
+👉 **[swiftsteed.github.io/building-ai-native-startup](https://swiftsteed.github.io/building-ai-native-startup/)**
+
+Bilingual — choose your language on the landing page.
+
+### About
+
+AI is reshaping how startups are built. This playbook remaps the four core stages — **Idea, MVP, Launch, and Scale** — for the AI-native era.
+
+### Files
+
+| File | Description |
+|------|-------------|
+| `index.html` | Bilingual landing page |
+| `zh.html` | Chinese edition |
+| `en.html` | English edition |
+
+### License
+
+Original book copyright by Anthropic. This site is an interactive learning companion, not a replacement for the original work.
